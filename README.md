@@ -1,215 +1,241 @@
 # Wazulu Nexus
 
-### Deterministic AI Task Executor
+A deterministic engine that converts natural language tasks into validated DAG execution pipelines.
 
-Wazulu Nexus is a deterministic workflow engine for AI tasks.  
-It compiles natural language requests into a validated execution graph and runs them as a predictable pipeline.
+Wazulu Nexus converts natural language requests into a validated execution pipeline using a Directed Acyclic Graph (DAG). Instead of autonomous reasoning loops, Nexus builds a clear execution plan and runs tasks in a predictable order.
 
-Unlike autonomous agent loops, Nexus executes tasks through a **validated DAG (Directed Acyclic Graph)**.
-
-> Slow thinking once. Fast deterministic execution forever.
+The goal is simple: make AI-assisted automation transparent, reproducible, and controllable.
 
 ---
 
-# The Problem
+## Problem
 
-Many AI agent systems rely on continuous reasoning loops:
+Many AI agent systems operate using reasoning loops:
 
+```
 Prompt → Think → Act → Observe → Repeat
-
-This can lead to:
-
-- unpredictable execution
-- hidden internal state
-- difficult debugging
-- excessive API calls
-
-Developers often cannot see the full plan before execution begins.
-
----
-
-# The Nexus Approach
-
-Nexus treats AI workflows like build systems.
-
-```
-task
- ↓
-planner
- ↓
-validated DAG
- ↓
-parallel execution
- ↓
-results
 ```
 
-The execution plan is created once, validated, and then executed deterministically.
+While flexible, this approach introduces several problems:
+
+- unpredictable execution  
+- hidden decision chains  
+- difficult debugging  
+- inconsistent results  
+
+Developers often cannot explain **why** an agent performed a certain action.
 
 ---
 
-# Features
+## Solution
 
-- Deterministic execution plans
-- Directed Acyclic Graph validation
-- Parallel step execution
-- Fail-fast validation
-- Step caching
-- CLI interface
-- Dry-run preview mode
-- Execution metrics
+Wazulu Nexus replaces reasoning loops with a **deterministic execution graph**.
+
+A request is translated into a DAG where each node represents a task.
+
+Each node:
+
+- has explicit inputs  
+- produces explicit outputs  
+- runs in a defined order  
+- is visible and inspectable  
+
+This allows developers to see the exact structure of an AI-driven workflow **before execution begins**.
 
 ---
 
-# Quick Start
+## Core Idea
+
+Instead of autonomous agents, Nexus works like a **task compiler**.
+
+Natural language input:
+
+```
+build a project report and send it to slack
+```
+
+Becomes a pipeline:
+
+```
+[collect_data] → [generate_report] → [send_slack]
+```
+
+Each stage is validated before execution.
+
+---
+
+## Quick Start
 
 Clone the repository:
 
 ```bash
 git clone https://github.com/WAZULU503/wazulu-nexus
 cd wazulu-nexus
-npm install
-npm link
 ```
 
-Run a task:
+Build the CLI:
 
 ```bash
-nexus "compare rust vs zig"
+go build -o nexus ./cmd/nexus
 ```
 
-Example output:
-
-```
-Wazulu Nexus
-
-Running task: compare rust vs zig
-
-[NEXUS] ENGINE Executing DAG with 2 steps...
-[NEXUS] analyze ✓
-[NEXUS] synthesize ✓
-
-[NEXUS] ENGINE Execution complete.
-```
-
----
-
-# Dry Run Mode
-
-Preview the execution plan without running the tools.
+Run a request:
 
 ```bash
-nexus "compare rust vs zig" --dry-run
-```
-
-Example:
-
-```
-Execution Plan
-
-1  analyze      root
-2  synthesize   depends on: 1
+./nexus "summarize logs and email the summary"
 ```
 
 ---
 
-# Architecture
-
-Nexus follows a deterministic execution pipeline:
+## Example Output
 
 ```
-CLI
- ↓
-Planner
- ↓
-Validator
- ↓
-DAG Executor
- ↓
-Tool Registry
- ↓
-Cache
- ↓
-Synthesizer
- ↓
-Metrics
-```
+Parsing request...
 
-Each component has a single responsibility.
+Execution Graph
 
----
+1 read_logs
+2 summarize_logs       depends on: read_logs
+3 email_summary        depends on: summarize_logs
 
-# Project Structure
+Running pipeline...
 
-```
-bin/
-  nexus.js
+✓ read_logs
+✓ summarize_logs
+✓ email_summary
 
-src/
-  core/
-    planner.js
-    validator.js
-    executor.js
-    cache.js
-    synth.js
-    metrics.js
-
-tools/
-  registry.js
-
-utils/
-  logger.js
-
-index.js
+Pipeline complete.
 ```
 
 ---
 
-# Wazulu Ecosystem
+## Features
 
-Nexus is part of the broader **Wazulu systems research ecosystem** focused on deterministic execution and verifiable infrastructure.
-
-### Wazulu Nexus
-Deterministic DAG-based AI task execution engine.
-
-### Wazulu Execution
-Cryptographically verifiable execution ledger for recording runtime events and producing tamper-evident audit trails.
-
-### Wazulu Witness
-Transparency verification layer providing append-only event records and integrity verification.
-
-### Wazulu AI Runtime
-Governed execution layer that manages AI task execution under deterministic policy control.
-
-These systems explore different approaches to:
-
-- deterministic execution
-- verifiable computation
-- transparent system behavior
-- reliable AI workflow orchestration
+- Deterministic execution graph  
+- DAG-based task planning  
+- Transparent pipeline structure  
+- Explicit node dependencies  
+- Predictable execution order  
+- Minimal runtime design  
+- No hidden reasoning loops  
 
 ---
 
-# Ecosystem Context
+## Architecture
 
-| System | Execution Model | Best Use |
-|------|------|------|
-| AutoGPT / CrewAI | Autonomous agent loops | Exploration |
-| LangGraph | Stateful agent graphs | Complex orchestration |
-| Nexus | Deterministic DAG executor | Reliable AI workflows |
+Typical structure of a Nexus pipeline:
 
-Nexus focuses on **predictable execution**, not autonomous reasoning.
+```
+User Request
+      │
+      ▼
+Task Parser
+      │
+      ▼
+Execution Graph (DAG)
+      │
+      ▼
+Task Scheduler
+      │
+      ▼
+Node Execution
+```
+
+Each node receives inputs only from its declared dependencies.
 
 ---
 
-# Status
+## Example Pipeline
 
-Version **v1.0.0**
+User request:
 
-Deterministic DAG execution engine.
+```
+summarize logs and email the summary
+```
+
+Generated execution graph:
+
+```
+[read_logs]
+      │
+      ▼
+[summarize_logs]
+      │
+      ▼
+[email_summary]
+```
+
+Execution proceeds node-by-node.
 
 ---
 
-# License
+## Project Structure
+
+```
+cmd/
+    nexus/
+        main.go
+
+internal/
+    engine/
+    planner/
+    graph/
+    tasks/
+
+README.md
+go.mod
+```
+
+---
+
+## Design Philosophy
+
+Nexus follows three principles.
+
+### Determinism
+
+The same request should produce the same execution structure.
+
+### Transparency
+
+All execution steps must be visible and inspectable.
+
+### Control
+
+Developers remain in control of the execution pipeline.
+
+---
+
+## Status
+
+Initial release.
+
+```
+v1.0
+```
+
+Core functionality implemented.
+
+---
+
+## Roadmap
+
+Planned improvements:
+
+- improved task planning  
+- parallel task execution  
+- task plugin system  
+- pipeline visualization tools  
+
+---
+
+## Author
+
+Wazulu  
+aka James Redmond
+
+---
+
+## License
 
 MIT
