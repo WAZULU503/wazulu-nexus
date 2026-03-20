@@ -1,56 +1,100 @@
 # wazulu-nexus
 
-Deterministic task execution engine using DAG pipelines.
+Deterministic execution engine that converts natural language tasks into validated DAG pipelines.
 
 ---
 
 ## Problem
 
-Task execution systems are often unpredictable and difficult to debug.  
-Dynamic behavior and hidden state make results inconsistent.
+Many AI systems rely on reasoning loops:
+
+Prompt → Think → Act → Observe → Repeat
+
+While flexible, this leads to:
+
+- unpredictable execution  
+- hidden decision chains  
+- difficult debugging  
+- inconsistent results  
+
+Developers cannot reliably explain or reproduce outcomes.
 
 ---
 
 ## Solution
 
-wazulu-nexus executes tasks through a defined DAG (Directed Acyclic Graph), ensuring predictable and repeatable execution.
+wazulu-nexus replaces reasoning loops with a deterministic execution graph.
 
-Each step runs in a fixed order with explicit dependencies.
+A request is translated into a Directed Acyclic Graph (DAG), where each node:
+
+- has explicit inputs  
+- produces explicit outputs  
+- runs in a defined order  
+- is fully visible and inspectable  
+
+Execution is predictable and reproducible.
+
+---
+
+## Core Idea
+
+Natural language input is compiled into a task pipeline.
+
+Example:
+
+build a project report and send it to slack
+
+Becomes:
+
+[collect_data] → [generate_report] → [send_slack]
+
+Each step is validated before execution.
 
 ---
 
 ## Usage
 
-wazulu run pipeline.yaml
+Build the CLI:
+
+go build -o nexus ./cmd/nexus
+
+Run a request:
+
+./nexus "summarize logs and email the summary"
 
 ---
 
 ## What it does
 
+- Converts natural language into a DAG execution plan  
 - Executes tasks in a deterministic order  
-- Uses DAG structure to define dependencies  
-- Ensures repeatable execution  
-- Makes task flow explicit and traceable  
+- Makes all steps explicit and traceable  
+- Removes hidden reasoning behavior  
 
 ---
 
 ## Scope
 
-- No AI decision-making  
-- No dynamic task generation  
-- No hidden execution logic  
+- No autonomous agents  
+- No reasoning loops  
+- No hidden execution paths  
 - No UI  
 
 ---
 
 ## Design
 
-Simple, predictable systems over complex automation.
-
 Execution should be:
+
+- deterministic  
 - transparent  
-- repeatable  
-- debuggable  
+- controllable  
+
+---
+
+## Status
+
+v1.0.0 — deterministic DAG execution engine
 
 ---
 
