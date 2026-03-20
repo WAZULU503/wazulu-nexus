@@ -1,233 +1,118 @@
-# Wazulu Nexus
+# jdt (James Dev Tool)
 
-### Deterministic AI Task Executor
+Fast CLI tool for finding and killing blocked development ports.
 
-Wazulu Nexus is a deterministic workflow engine that converts natural language tasks into validated DAG execution pipelines.
+When working on multiple local projects, ports like **3000**, **5173**, **8000**, or **8080** often remain open after a development server stops.
 
-Instead of autonomous reasoning loops, Nexus builds a clear execution plan and runs tasks in a predictable order.
-
-> Slow thinking once. Fast deterministic execution forever.
-
-The goal is simple: make AI-assisted automation transparent, reproducible, and controllable.
+`jdt` quickly shows which process owns the port and which project started it, allowing you to terminate it instantly.
 
 ---
 
-# Problem
+## Install
 
-Many AI agent systems rely on continuous reasoning loops:
+Requires Go.
 
-```
-Prompt → Think → Act → Observe → Repeat
-```
+Install directly from GitHub:
 
-While flexible, this approach introduces several problems:
+go install github.com/WAZULU503/james-dev-tool/cmd/jdt@latest
 
-- unpredictable execution
-- hidden decision chains
-- difficult debugging
-- inconsistent results
+After installation:
 
-Developers often cannot explain why an agent performed a certain action.
+jdt version
 
 ---
 
-# Solution
+## Commands
 
-Wazulu Nexus replaces reasoning loops with a deterministic execution graph.
+### List active development ports
+jdt p ls
 
-A request is translated into a Directed Acyclic Graph (DAG) where each node represents a task.
+Example output:
 
-Each node:
-
-- has explicit inputs
-- produces explicit outputs
-- runs in a defined order
-- is visible and inspectable
-
-This allows developers to see the exact structure of an AI workflow before execution begins.
+PORT   SERVICE     PROJECT            PID  
+3000   Next.js     storefront         4212  
+5173   Vite        admin-dashboard    8421  
+8000   Dev Server  api-server         1331  
 
 ---
 
-# Core Idea
+### Kill a specific port
+jdt p k 3000
 
-Instead of autonomous agents, Nexus works like a task compiler.
-
-Natural language input:
-
-```
-build a project report and send it to slack
-```
-
-Becomes a validated execution pipeline:
-
-```
-[collect_data] → [generate_report] → [send_slack]
-```
-
-Each stage is validated before execution.
+You will be asked for confirmation before the process is terminated.
 
 ---
 
-# Features
+### Free all development ports
+jdt p f
 
-- Deterministic execution graph
-- DAG-based task planning
-- Transparent pipeline structure
-- Explicit node dependencies
-- Predictable execution order
-- Fail-fast validation
-- Minimal runtime design
-- CLI interface
+Lists active development ports and allows clearing them all at once.
 
 ---
 
-# Quick Start
-
-Clone the repository:
-
-```bash
-git clone https://github.com/WAZULU503/wazulu-nexus
-cd wazulu-nexus
-```
-
-Build the CLI:
-
-```bash
-go build -o nexus ./cmd/nexus
-```
-
-Run a request:
-
-```bash
-./nexus "summarize logs and email the summary"
-```
+### Show version
+jdt version
 
 ---
 
-# Example Output
+## What jdt does
 
-```
-Parsing request...
-
-Execution Graph
-
-1 read_logs
-2 summarize_logs       depends on: read_logs
-3 email_summary        depends on: summarize_logs
-
-Running pipeline...
-
-✓ read_logs
-✓ summarize_logs
-✓ email_summary
-
-Pipeline complete.
-```
+- Detects listening ports using `lsof`
+- Maps ports to running processes
+- Identifies the project directory that started the process
+- Allows safe termination with confirmation
 
 ---
 
-# Architecture
+## Works on
 
-Typical structure of a Nexus pipeline:
-
-```
-User Request
-      │
-      ▼
-Task Parser
-      │
-      ▼
-Execution Graph (DAG)
-      │
-      ▼
-Task Scheduler
-      │
-      ▼
-Node Execution
-```
-
-Each node receives inputs only from its declared dependencies.
+- macOS
+- Linux
 
 ---
 
-# Example Pipeline
+## Example workflow
 
-User request:
+A development port is blocked:
 
-```
-summarize logs and email the summary
-```
+Error: address already in use :3000
 
-Generated execution graph:
+Run:
 
-```
-[read_logs]
-      │
-      ▼
-[summarize_logs]
-      │
-      ▼
-[email_summary]
-```
+jdt p ls
 
-Execution proceeds node-by-node.
+Find the process:
 
----
+PORT   SERVICE   PROJECT         PID  
+3000   Next.js   marketing-site  4212  
 
-# Project Structure
+Kill it:
 
-```
-cmd/
-    nexus/
-        main.go
+jdt p k 3000
 
-internal/
-    engine/
-    planner/
-    graph/
-    tasks/
-
-README.md
-go.mod
-```
+Port is now free.
 
 ---
 
-# Design Philosophy
+## Design Philosophy
 
-Nexus follows three principles.
+Small tools that solve real developer problems.
 
-### Determinism
+- No frameworks  
+- No telemetry  
+- No background services  
 
-The same request should produce the same execution structure.
-
-### Transparency
-
-All execution steps must be visible and inspectable.
-
-### Control
-
-Developers remain in control of the execution pipeline.
+Just a single fast Go binary.
 
 ---
 
-# Status
-
-Initial release.
-
-v1.0.0
-
-Deterministic DAG execution engine.
-
----
-
-# Author
+## Author
 
 Wazulu  
 aka James Redmond
 
 ---
 
-# License
+## License
 
-MIT
+MIT License
