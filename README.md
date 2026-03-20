@@ -1,6 +1,8 @@
 # wazulu-nexus
 
-Deterministic execution engine that converts natural language tasks into validated DAG pipelines.
+Deterministic execution engine for structured task pipelines (DAG-based).
+
+Current version demonstrates execution using a simple planner.
 
 ---
 
@@ -23,9 +25,9 @@ Developers cannot reliably explain or reproduce outcomes.
 
 ## Solution
 
-wazulu-nexus replaces reasoning loops with a deterministic execution graph.
+wazulu-nexus replaces implicit reasoning loops with a deterministic execution graph.
 
-A request is translated into a Directed Acyclic Graph (DAG), where each node:
+A request is executed as a Directed Acyclic Graph (DAG), where each node:
 
 - has explicit inputs  
 - produces explicit outputs  
@@ -38,7 +40,7 @@ Execution is predictable and reproducible.
 
 ## Core Idea
 
-Natural language input is compiled into a task pipeline.
+Tasks are executed through a structured pipeline.
 
 Example:
 
@@ -54,22 +56,42 @@ Each step is validated before execution.
 
 ## Usage
 
-Build the CLI:
+Install CLI:
 
-go build -o nexus ./cmd/nexus
+npm link
 
-Run a request:
+Run:
 
-./nexus "summarize logs and email the summary"
+nexus "compare rust vs zig"
+
+---
+
+## Example Output
+
+Execution Plan
+
+1. analyze
+2. collect (depends on: analyze)
+3. compare (depends on: collect)
+4. summarize (depends on: compare)
+
+Run? [y/N] y
+
+✓ analyze  
+✓ collect  
+✓ compare  
+✓ summarize  
+
+Done.
 
 ---
 
 ## What it does
 
-- Converts natural language into a DAG execution plan  
-- Executes tasks in a deterministic order  
-- Makes all steps explicit and traceable  
-- Removes hidden reasoning behavior  
+- Executes tasks using a deterministic DAG  
+- Enforces explicit dependency ordering  
+- Makes execution steps visible and traceable  
+- Demonstrates structured execution flow  
 
 ---
 
@@ -84,7 +106,7 @@ Run a request:
 
 ## Design
 
-Execution should be:
+Execution is:
 
 - deterministic  
 - transparent  
@@ -94,7 +116,7 @@ Execution should be:
 
 ## Status
 
-v1.0.0 — deterministic DAG execution engine
+v1 — execution engine implemented, planner is simple
 
 ---
 
