@@ -1,132 +1,145 @@
 # wazulu-nexus
 
-Deterministic execution engine for structured task pipelines (DAG-based).
+Deterministic DAG execution engine for structured task pipelines.
 
-Current version demonstrates execution using a simple planner.
+wazulu-nexus executes tasks through explicit dependency graphs instead of opaque reasoning loops.
 
----
+Each node:
 
-## Problem
+* has defined inputs
+* produces defined outputs
+* runs in a validated order
+* is fully inspectable
 
-Many AI systems rely on reasoning loops:
-
-Prompt → Think → Act → Observe → Repeat
-
-While flexible, this leads to:
-
-- unpredictable execution  
-- hidden decision chains  
-- difficult debugging  
-- inconsistent results  
-
-Developers cannot reliably explain or reproduce outcomes.
+Execution is deterministic, traceable, and reproducible.
 
 ---
 
-## Solution
+## Example
 
-wazulu-nexus replaces implicit reasoning loops with a deterministic execution graph.
+Input:
 
-A request is executed as a Directed Acyclic Graph (DAG), where each node:
-
-- has explicit inputs  
-- produces explicit outputs  
-- runs in a defined order  
-- is fully visible and inspectable  
-
-Execution is predictable and reproducible.
-
----
-
-## Core Idea
-
-Tasks are executed through a structured pipeline.
-
-Example:
-
+```text
 build a project report and send it to slack
+```
 
-Becomes:
+Execution graph:
 
-[collect_data] → [generate_report] → [send_slack]
+```text
+collect_data
+    ↓
+generate_report
+    ↓
+send_slack
+```
 
-Each step is validated before execution.
+Every step is validated before execution.
+
+---
+
+## Why
+
+Most AI execution systems rely on opaque internal loops:
+
+```text
+Prompt → Think → Act → Observe → Repeat
+```
+
+This makes execution difficult to:
+
+* inspect
+* reproduce
+* debug
+* verify
+
+wazulu-nexus replaces implicit execution with explicit dependency graphs.
+
+---
+
+## Features
+
+* Deterministic DAG execution
+* Explicit dependency ordering
+* Traceable execution flow
+* Human-readable execution plans
+* Simple CLI workflow
 
 ---
 
 ## Usage
 
-Install CLI:
+Install:
 
+```sh
 npm link
+```
 
 Run:
 
+```sh
 nexus "compare rust vs zig"
+```
 
----
+Example output:
 
-## Example Output
-
+```text
 Execution Plan
 
-1. analyze
-2. collect (depends on: analyze)
-3. compare (depends on: collect)
-4. summarize (depends on: compare)
+analyze
+collect (depends on: analyze)
+compare (depends on: collect)
+summarize (depends on: compare)
 
 Run? [y/N] y
 
-✓ analyze  
-✓ collect  
-✓ compare  
-✓ summarize  
+✓ analyze
+✓ collect
+✓ compare
+✓ summarize
 
 Done.
-
----
-
-## What it does
-
-- Executes tasks using a deterministic DAG  
-- Enforces explicit dependency ordering  
-- Makes execution steps visible and traceable  
-- Demonstrates structured execution flow  
+```
 
 ---
 
 ## Scope
 
-- No autonomous agents  
-- No reasoning loops  
-- No hidden execution paths  
-- No UI  
+Included:
+
+* DAG execution
+* Dependency validation
+* Structured execution flow
+* Execution plan preview
+
+Not included:
+
+* Autonomous agents
+* Recursive reasoning loops
+* Hidden execution chains
+* UI layer
 
 ---
 
-## Design
+## Design Principles
 
-Execution is:
+Execution should be:
 
-- deterministic  
-- transparent  
-- controllable  
+* deterministic
+* transparent
+* controllable
+* inspectable
 
 ---
 
 ## Status
 
-v1 — execution engine implemented, planner is simple
-
----
-
-## Author
-
-Wazulu  
-aka James Redmond
+v1 — execution engine implemented, planner intentionally simple.
 
 ---
 
 ## License
 
-MIT License
+GPL-2.0 — see [LICENSE](./LICENSE) for details.
+
+wazulu-nexus is intended to remain open and freely inspectable.
+Commercial closed-source redistribution is not permitted under the license terms.
